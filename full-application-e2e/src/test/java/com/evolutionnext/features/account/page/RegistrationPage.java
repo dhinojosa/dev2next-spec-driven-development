@@ -17,9 +17,9 @@ public final class RegistrationPage {
     }
 
     public DashboardPage register(String userName, String password) {
-        browser.waitForElement(By.name("userName")).sendKeys(userName);
-        browser.waitForElement(By.name("password")).sendKeys(password);
-        browser.waitForElement(By.cssSelector("button[type='submit']")).click();
+        browser.replaceInput(By.name("userName"), userName);
+        browser.replaceInput(By.name("password"), password);
+        browser.submitForm(By.cssSelector("form[action='/account/register']"));
         return new DashboardPage(browser).waitUntilVisible();
     }
 }

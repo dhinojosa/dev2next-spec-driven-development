@@ -17,9 +17,9 @@ public final class LoginPage {
     }
 
     public DashboardPage logIn(String userName, String password) {
-        browser.waitForElement(By.name("userName")).sendKeys(userName);
-        browser.waitForElement(By.name("password")).sendKeys(password);
-        browser.waitForElement(By.cssSelector("button[type='submit']")).click();
+        browser.replaceInput(By.name("userName"), userName);
+        browser.replaceInput(By.name("password"), password);
+        browser.submitForm(By.cssSelector("form[action='/account/login']"));
         return new DashboardPage(browser).waitUntilVisible();
     }
 }

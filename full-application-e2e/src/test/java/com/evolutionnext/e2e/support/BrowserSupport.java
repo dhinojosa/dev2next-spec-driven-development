@@ -2,6 +2,7 @@ package com.evolutionnext.e2e.support;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -52,6 +53,23 @@ public final class BrowserSupport {
             browserWait()
                 .ignoring(StaleElementReferenceException.class)
                 .until(ExpectedConditions.elementToBeClickable(selector)));
+    }
+
+    public void replaceInput(By selector, String value) {
+        var input = waitForElement(selector);
+        input.click();
+        input.sendKeys(Keys.chord(Keys.COMMAND, "a"));
+        input.sendKeys(Keys.BACK_SPACE);
+        input.sendKeys(value);
+        withDiagnostics("input value to match requested text: " + selector, () ->
+            browserWait()
+                .ignoring(StaleElementReferenceException.class)
+                .until(driver -> value.equals(
+                    driver.findElement(selector).getDomProperty("value"))));
+    }
+
+    public void submitForm(By selector) {
+        waitForElement(selector).submit();
     }
 
     public List<WebElement> waitForElements(By selector) {
