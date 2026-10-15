@@ -25,11 +25,12 @@ class JdbcActivityInventoryRepositoryPropertyTest {
     @Property(tries = 3)
     void everySavedActivityCanBeReadForItsUser(
         @ForAll("userNames") String generatedUserName,
-        @ForAll("activityNames") String activityName) {
+        @ForAll("activityNames") String activityName,
+        @ForAll("priorities") ActivityPriority priority) {
         var userName = userNamePrefix + generatedUserName;
         var repository = repository();
         var inventory = new ActivityInventory()
-            .add(new ActivityName(activityName), ActivityPriority.HIGH);
+            .add(new ActivityName(activityName), priority);
 
         repository.save(userName, inventory);
 
@@ -50,5 +51,10 @@ class JdbcActivityInventoryRepositoryPropertyTest {
     @Provide
     net.jqwik.api.Arbitrary<String> activityNames() {
         return ActivityInventoryArbitrary.activityNames();
+    }
+
+    @Provide
+    net.jqwik.api.Arbitrary<ActivityPriority> priorities() {
+        return ActivityInventoryArbitrary.priorities();
     }
 }

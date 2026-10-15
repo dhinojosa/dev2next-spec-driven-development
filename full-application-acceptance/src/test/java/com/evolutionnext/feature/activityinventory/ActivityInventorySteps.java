@@ -52,7 +52,12 @@ public final class ActivityInventorySteps {
 
     @And("the user adds an activity named {string} with high priority")
     public void userAddsAnActivityWithHighPriority(String activityName) throws Exception {
-        addActivity(activityName);
+        addActivity(activityName, "HIGH");
+    }
+
+    @And("the user adds an activity named {string} with medium priority")
+    public void userAddsAnActivityWithMediumPriority(String activityName) throws Exception {
+        addActivity(activityName, "MEDIUM");
     }
 
     @Then("the activity inventory shows {string}")
@@ -66,10 +71,16 @@ public final class ActivityInventorySteps {
         assertThat(state.lastResponse().body()).contains("High priority");
     }
 
+    @And("{string} is shown as medium priority")
+    public void activityIsShownAsMediumPriority(String activityName) {
+        assertThat(state.lastResponse().body()).contains(activityName);
+        assertThat(state.lastResponse().body()).contains("Medium priority");
+    }
+
     @Given("a logged-in user has added {string} with high priority")
     public void loggedInUserHasAddedWithHighPriority(String activityName) throws Exception {
         registerAndStayLoggedIn();
-        addActivity(activityName);
+        addActivity(activityName, "HIGH");
     }
 
     @When("the user leaves and returns to the activity inventory page")
@@ -84,9 +95,9 @@ public final class ActivityInventorySteps {
             "/account/register", "userName=casey&password=correct-horse-battery-staple"));
     }
 
-    private void addActivity(String activityName) throws Exception {
+    private void addActivity(String activityName, String priority) throws Exception {
         state.rememberLastResponse(post("/activity-inventory/activity",
-            "activityName=%s&priority=HIGH".formatted(encode(activityName))));
+            "activityName=%s&priority=%s".formatted(encode(activityName), priority)));
     }
 
     private HttpResponse<String> get(String path) throws Exception {

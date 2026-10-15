@@ -25,4 +25,21 @@ class LoggedInActivityInventoryApplicationServiceTest {
             assertThat(activity.priority()).isEqualTo(ActivityPriority.HIGH);
         });
     }
+
+    @Test
+    void mediumPriorityActivityIsVisibleThroughTheQueryPort() {
+        var repository = new InMemoryActivityInventoryRepository();
+        var commandService = new LoggedInActivityInventoryCommandApplicationService(repository);
+        var queryService = new LoggedInActivityInventoryQueryApplicationService(repository);
+
+        commandService.execute(new ActivityInventoryCommand.AddActivity(
+            "casey", "Prepare Workshop Slides", ActivityPriority.MEDIUM));
+
+        var view = (ActivityInventoryQueryResult.CurrentActivityInventoryView)
+            queryService.currentView("casey");
+        assertThat(view.activities()).singleElement().satisfies(activity -> {
+            assertThat(activity.activityName()).isEqualTo("Prepare Workshop Slides");
+            assertThat(activity.priority()).isEqualTo(ActivityPriority.MEDIUM);
+        });
+    }
 }

@@ -9,18 +9,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ActivityInventoryPropertyTest {
     @Property
-    void everyAddedActivityRemainsPresentWithItsPriority(@ForAll("activityNames") String activityName) {
+    void everyAddedActivityRemainsPresentWithItsPriority(
+        @ForAll("activityNames") String activityName,
+        @ForAll("priorities") ActivityPriority priority) {
         var inventory = new ActivityInventory()
-            .add(new ActivityName(activityName), ActivityPriority.HIGH);
+            .add(new ActivityName(activityName), priority);
 
         assertThat(inventory.activities()).anySatisfy(activity -> {
             assertThat(activity.activityName().value()).isEqualTo(activityName);
-            assertThat(activity.priority()).isEqualTo(ActivityPriority.HIGH);
+            assertThat(activity.priority()).isEqualTo(priority);
         });
     }
 
     @Provide
     net.jqwik.api.Arbitrary<String> activityNames() {
         return ActivityInventoryArbitrary.activityNames();
+    }
+
+    @Provide
+    net.jqwik.api.Arbitrary<ActivityPriority> priorities() {
+        return ActivityInventoryArbitrary.priorities();
     }
 }

@@ -1,5 +1,6 @@
 package com.evolutionnext.features.activityinventory.arbitrary;
 
+import com.evolutionnext.features.activityinventory.domain.model.ActivityPriority;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
 
@@ -21,5 +22,9 @@ public final class ActivityInventoryArbitrary {
             .ofMinLength(3)
             .ofMaxLength(20)
             .map(value -> "activity-user-" + value);
+    }
+
+    public static Arbitrary<ActivityPriority> priorities() {
+        return Arbitraries.of(ActivityPriority.values());
     }
 }

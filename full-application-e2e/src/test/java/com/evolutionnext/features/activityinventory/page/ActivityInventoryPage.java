@@ -20,8 +20,16 @@ public final class ActivityInventoryPage {
     }
 
     public ActivityInventoryPage addHighPriorityActivity(String activityName) {
+        return addActivity(activityName, "HIGH");
+    }
+
+    public ActivityInventoryPage addMediumPriorityActivity(String activityName) {
+        return addActivity(activityName, "MEDIUM");
+    }
+
+    private ActivityInventoryPage addActivity(String activityName, String priority) {
         browser.waitForElement(By.name("activityName")).sendKeys(activityName);
-        new Select(browser.waitForElement(By.name("priority"))).selectByValue("HIGH");
+        new Select(browser.waitForElement(By.name("priority"))).selectByValue(priority);
         browser.waitForElement(By.cssSelector(
             "form[action='/activity-inventory/activity'] button")).click();
         browser.waitForText(activityName);

@@ -14,10 +14,11 @@ class InMemoryActivityInventoryRepositoryPropertyTest {
     @Property
     void everySavedActivityCanBeReadForItsUser(
         @ForAll("userNames") String userName,
-        @ForAll("activityNames") String activityName) {
+        @ForAll("activityNames") String activityName,
+        @ForAll("priorities") ActivityPriority priority) {
         var repository = new InMemoryActivityInventoryRepository();
         var inventory = new ActivityInventory()
-            .add(new ActivityName(activityName), ActivityPriority.HIGH);
+            .add(new ActivityName(activityName), priority);
 
         repository.save(userName, inventory);
 
@@ -33,5 +34,10 @@ class InMemoryActivityInventoryRepositoryPropertyTest {
     @Provide
     net.jqwik.api.Arbitrary<String> activityNames() {
         return ActivityInventoryArbitrary.activityNames();
+    }
+
+    @Provide
+    net.jqwik.api.Arbitrary<ActivityPriority> priorities() {
+        return ActivityInventoryArbitrary.priorities();
     }
 }

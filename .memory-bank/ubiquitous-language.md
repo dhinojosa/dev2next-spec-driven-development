@@ -36,6 +36,8 @@ that depends on it.
 - `priority`: the importance assigned to an activity
 - `high priority`: the priority used for an activity that should receive early
   attention
+- `medium priority`: the priority used for an activity that should receive
+  normal attention
 
 ## Naming Guidance
 

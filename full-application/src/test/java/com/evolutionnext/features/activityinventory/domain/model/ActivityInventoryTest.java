@@ -15,4 +15,15 @@ class ActivityInventoryTest {
             assertThat(activity.priority()).isEqualTo(ActivityPriority.HIGH);
         });
     }
+
+    @Test
+    void addsAndReadsAMediumPriorityActivity() {
+        var inventory = new ActivityInventory()
+            .add(new ActivityName("Prepare Workshop Slides"), ActivityPriority.MEDIUM);
+
+        assertThat(inventory.activities()).singleElement().satisfies(activity -> {
+            assertThat(activity.activityName().value()).isEqualTo("Prepare Workshop Slides");
+            assertThat(activity.priority()).isEqualTo(ActivityPriority.MEDIUM);
+        });
+    }
 }

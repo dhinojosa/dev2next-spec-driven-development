@@ -17,3 +17,11 @@ Feature: Activity Inventory
         When the user leaves and returns to the activity inventory page
         Then the activity inventory shows "Call Mother"
         And "Call Mother" is shown as high priority
+
+    @ACC-0007-01
+    Scenario: Add a medium-priority activity
+        Given a logged-in user is on the dashboard
+        When the user opens the activity inventory page
+        And the user adds an activity named "Prepare Workshop Slides" with medium priority
+        Then the activity inventory shows "Prepare Workshop Slides"
+        And "Prepare Workshop Slides" is shown as medium priority

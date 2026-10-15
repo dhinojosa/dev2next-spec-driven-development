@@ -3,6 +3,7 @@ package com.evolutionnext.features.activityinventory.infrastructure.adapter.in;
 import com.evolutionnext.AccountApplication;
 import com.evolutionnext.features.account.infrastructure.adapter.out.InMemoryAccountRepository;
 import com.evolutionnext.features.activityinventory.arbitrary.ActivityInventoryArbitrary;
+import com.evolutionnext.features.activityinventory.domain.model.ActivityPriority;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
@@ -19,7 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ActivityInventoryHttpHandlerPropertyTest {
     @Property(tries = 20)
-    void everySuccessfulPostIsVisibleThroughGet(@ForAll("activityNames") String activityName)
+    void everySuccessfulPostIsVisibleThroughGet(
+        @ForAll("activityNames") String activityName,
+        @ForAll("priorities") ActivityPriority priority)
         throws Exception {
         var server = new AccountApplication().start(0, new InMemoryAccountRepository());
         try {
@@ -34,13 +37,13 @@ class ActivityInventoryHttpHandlerPropertyTest {
                 .split(";", 2)[0];
 
             var added = post(httpClient, baseUri, "/activity-inventory/activity",
-                "activityName=%s&priority=HIGH".formatted(encode(activityName)),
+                "activityName=%s&priority=%s".formatted(encode(activityName), priority.name()),
                 cookie);
             var read = get(httpClient, baseUri, "/activity-inventory", cookie);
 
             assertThat(added.statusCode()).isEqualTo(200);
             assertThat(read.body()).contains(activityName);
-            assertThat(read.body()).contains("High priority");
+            assertThat(read.body()).contains(titleCase(priority) + " priority");
         } finally {
             server.stop(0);
         }
@@ -75,8 +78,18 @@ class ActivityInventoryHttpHandlerPropertyTest {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
+    private static String titleCase(ActivityPriority priority) {
+        var value = priority.name().toLowerCase();
+        return Character.toUpperCase(value.charAt(0)) + value.substring(1);
+    }
+
     @Provide
     net.jqwik.api.Arbitrary<String> activityNames() {
         return ActivityInventoryArbitrary.activityNames();
+    }
+
+    @Provide
+    net.jqwik.api.Arbitrary<ActivityPriority> priorities() {
+        return ActivityInventoryArbitrary.priorities();
     }
 }

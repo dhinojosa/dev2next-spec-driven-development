@@ -54,6 +54,19 @@ class ActivityInventoryHttpHandlerTest {
         assertThat(returned.body()).contains("High priority");
     }
 
+    @Test
+    void addsAndShowsAMediumPriorityActivity() throws Exception {
+        registerAndStayLoggedIn();
+
+        var added = post("/activity-inventory/activity",
+            "activityName=%s&priority=MEDIUM".formatted(encode("Prepare Workshop Slides")));
+        var returned = get("/activity-inventory");
+
+        assertThat(added.statusCode()).isEqualTo(200);
+        assertThat(returned.body()).contains("Prepare Workshop Slides");
+        assertThat(returned.body()).contains("Medium priority");
+    }
+
     private void registerAndStayLoggedIn() throws Exception {
         post("/account/register", "userName=casey&password=correct-horse-battery-staple");
     }

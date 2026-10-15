@@ -15,19 +15,20 @@ class LoggedInActivityInventoryApplicationServicePropertyTest {
     @Property
     void everyAcceptedAddCommandIsVisibleThroughTheQueryPort(
         @ForAll("userNames") String userName,
-        @ForAll("activityNames") String activityName) {
+        @ForAll("activityNames") String activityName,
+        @ForAll("priorities") ActivityPriority priority) {
         var repository = new InMemoryActivityInventoryRepository();
         var commandService = new LoggedInActivityInventoryCommandApplicationService(repository);
         var queryService = new LoggedInActivityInventoryQueryApplicationService(repository);
 
         commandService.execute(new ActivityInventoryCommand.AddActivity(
-            userName, activityName, ActivityPriority.HIGH));
+            userName, activityName, priority));
 
         var view = (ActivityInventoryQueryResult.CurrentActivityInventoryView)
             queryService.currentView(userName);
         assertThat(view.activities()).anySatisfy(activity -> {
             assertThat(activity.activityName()).isEqualTo(activityName);
-            assertThat(activity.priority()).isEqualTo(ActivityPriority.HIGH);
+            assertThat(activity.priority()).isEqualTo(priority);
         });
     }
 
@@ -39,5 +40,10 @@ class LoggedInActivityInventoryApplicationServicePropertyTest {
     @Provide
     net.jqwik.api.Arbitrary<String> activityNames() {
         return ActivityInventoryArbitrary.activityNames();
+    }
+
+    @Provide
+    net.jqwik.api.Arbitrary<ActivityPriority> priorities() {
+        return ActivityInventoryArbitrary.priorities();
     }
 }

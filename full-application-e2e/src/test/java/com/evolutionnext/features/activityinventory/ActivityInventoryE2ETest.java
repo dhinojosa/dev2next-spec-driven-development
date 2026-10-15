@@ -72,4 +72,34 @@ class ActivityInventoryE2ETest {
             .body(containsString("Call Mother"))
             .body(containsString("High priority"));
     }
+
+    @Test
+    void mediumPriorityActivityIsAvailableThroughThePackagedApplication() {
+        var cookies = new CookieFilter();
+        var userName = "activity-medium-api-" + UUID.randomUUID();
+
+        io.restassured.RestAssured.given()
+            .baseUri(application.baseUri().toString())
+            .filter(cookies)
+            .contentType("application/x-www-form-urlencoded")
+            .formParam("userName", userName)
+            .formParam("password", "correct-horse-battery-staple")
+            .when()
+            .post("/account/register")
+            .then()
+            .statusCode(200);
+
+        io.restassured.RestAssured.given()
+            .baseUri(application.baseUri().toString())
+            .filter(cookies)
+            .contentType("application/x-www-form-urlencoded")
+            .formParam("activityName", "Prepare Workshop Slides")
+            .formParam("priority", "MEDIUM")
+            .when()
+            .post("/activity-inventory/activity")
+            .then()
+            .statusCode(200)
+            .body(containsString("Prepare Workshop Slides"))
+            .body(containsString("Medium priority"));
+    }
 }

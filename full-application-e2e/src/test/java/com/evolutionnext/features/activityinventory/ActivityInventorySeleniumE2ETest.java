@@ -40,4 +40,19 @@ class ActivityInventorySeleniumE2ETest {
         assertThat(activity.name()).isEqualTo("Call Mother");
         assertThat(activity.priorityText()).isEqualTo("High priority");
     }
+
+    @Test
+    void addsAndShowsAMediumPriorityActivityThroughTheBrowser() {
+        var activityInventory = browser.registrationPage()
+            .open()
+            .register("activity-medium-ui-" + UUID.randomUUID(),
+                "correct-horse-battery-staple")
+            .openActivityInventory()
+            .addMediumPriorityActivity("Prepare Workshop Slides");
+
+        var activity = activityInventory.activityNamed("Prepare Workshop Slides");
+
+        assertThat(activity.name()).isEqualTo("Prepare Workshop Slides");
+        assertThat(activity.priorityText()).isEqualTo("Medium priority");
+    }
 }
