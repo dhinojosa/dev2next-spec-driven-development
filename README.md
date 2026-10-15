@@ -1,4 +1,4 @@
-# O'Reilly Spec Driven Development
+# Dev2Next Spec Driven Development
 
 This project is for spec-driven-development.
 
